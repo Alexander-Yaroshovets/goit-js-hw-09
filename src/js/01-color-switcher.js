@@ -4,7 +4,7 @@ function getRandomHexColor() {
 
 const startEl = document.querySelector('[data-start]');
 const stopEl = document.querySelector('[data-stop]');
-
+let intervalId = null;
 startEl.addEventListener('click', () => {
   intervalId = setInterval(() => {
     document.body.style.backgroundColor = getRandomHexColor();

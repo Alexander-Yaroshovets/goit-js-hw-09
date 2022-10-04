@@ -1,6 +1,16 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const timerObj = {
+  startEl: document.querySelector('[data-start]'),
+  daysEl: document.querySelector('[data-days]'),
+  minutesEl: document.querySelector('[data-minutes]'),
+  hoursEl: document.querySelector('[data-hours]'),
+  secondsEl: document.querySelector('[data-seconds]'),
+  inputEl: document.querySelector('#datetime-picker'),
+};
+const { inputEl, startEl, daysEl, minutesEl, hoursEl, secondsEl } = timerObj;
+let targetDate = null;
 const options = {
   intervalId: null,
   enableTime: true,
@@ -8,7 +18,8 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    const dateDiff = selectedDates[0] - Date.now();
+    targetDate = selectedDates[0];
+    const dateDiff = targetDate - Date.now();
     if (dateDiff <= 0) {
       Notify.failure('Please choose a date in the future');
       startEl.disabled = true;
@@ -16,23 +27,26 @@ const options = {
     } else {
       startEl.disabled = false;
     }
-    startEl.addEventListener('click', () => {
-      this.intervalId = setInterval(() => {
-        const dateDiff = selectedDates[0] - Date.now();
-        if (dateDiff <= 1000) {
-          clearInterval(this.intervalId);
-        }
-        const data = convertMs(dateDiff);
-        daysEl.textContent = addLeadingZero(data.days);
-        hoursEl.textContent = addLeadingZero(data.hours);
-        minutesEl.textContent = addLeadingZero(data.minutes);
-        secondsEl.textContent = addLeadingZero(data.seconds);
-      }, 1000);
-    });
   },
 };
 flatpickr('#datetime-picker', options);
 
+startEl.addEventListener('click', () => {
+  intervalId = setInterval(() => {
+    const dateDiff = targetDate - Date.now();
+    startEl.disabled = true;
+    inputEl.disabled = true;
+
+    if (dateDiff <= 1000) {
+      clearInterval(intervalId);
+    }
+    const data = convertMs(dateDiff);
+    daysEl.textContent = addLeadingZero(data.days);
+    hoursEl.textContent = addLeadingZero(data.hours);
+    minutesEl.textContent = addLeadingZero(data.minutes);
+    secondsEl.textContent = addLeadingZero(data.seconds);
+  }, 1000);
+});
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -52,12 +66,3 @@ function convertMs(ms) {
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
-
-const timerObj = {
-  startEl: document.querySelector('[data-start]'),
-  daysEl: document.querySelector('[data-days]'),
-  minutesEl: document.querySelector('[data-minutes]'),
-  hoursEl: document.querySelector('[data-hours]'),
-  secondsEl: document.querySelector('[data-seconds]'),
-};
-const { startEl, daysEl, minutesEl, hoursEl, secondsEl } = timerObj;

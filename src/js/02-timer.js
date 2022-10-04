@@ -23,6 +23,7 @@ const options = {
     if (dateDiff <= 0) {
       Notify.failure('Please choose a date in the future');
       startEl.disabled = true;
+      inputEl.disabled = true;
       return;
     } else {
       startEl.disabled = false;

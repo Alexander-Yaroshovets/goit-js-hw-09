@@ -11,6 +11,7 @@ const timerObj = {
 };
 const { inputEl, startEl, daysEl, minutesEl, hoursEl, secondsEl } = timerObj;
 let targetDate = null;
+let intervalId = null;
 const options = {
   intervalId: null,
   enableTime: true,
